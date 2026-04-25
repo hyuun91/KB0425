@@ -47,12 +47,10 @@ KB금융그룹 고객 문의 자동 분류 시스템입니다.
 `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: prompt
-    });
-
-    let text = response.text || "";
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
     text = text.replace(/```json|```/g, "").trim();
 
     try {
