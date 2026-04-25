@@ -14,7 +14,7 @@ export const classifyInquiry = async (inquiryText: string): Promise<InquiryResul
     throw new Error("Gemini API 키가 설정되지 않았습니다. 환경변수를 확인해주세요.");
   }
 
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
   const prompt = `
 KB금융그룹 고객 문의 자동 분류 시스템입니다.
