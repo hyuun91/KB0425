@@ -48,7 +48,7 @@ KB금융그룹 고객 문의 자동 분류 시스템입니다.
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-flash-latest",
+      model: "gemini-1.5-flash",
       contents: prompt
     });
 
