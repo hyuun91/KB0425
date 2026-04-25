@@ -21,7 +21,7 @@ function App() {
             </h1>
           </div>
           <div className="text-xs font-bold px-2 py-1 bg-kb-yellow text-kb-gray rounded uppercase tracking-tighter">
-            Gemini 3 Flash
+            Gemini 3.1 Pro
           </div>
         </div>
       </header>
