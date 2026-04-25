@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { InquiryResult } from "../types/inquiry";
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
@@ -7,12 +7,14 @@ if (!API_KEY) {
   console.warn("환경변수 VITE_GEMINI_API_KEY가 설정되지 않았습니다. 분류 기능이 작동하지 않습니다.");
 }
 
-const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
+const genAI = new GoogleGenerativeAI(API_KEY);
 
 export const classifyInquiry = async (inquiryText: string): Promise<InquiryResult> => {
-  if (!ai) {
-    throw new Error("Gemini API 키가 설정되지 않았습니다. Vercel 환경변수를 확인해주세요.");
+  if (!API_KEY) {
+    throw new Error("Gemini API 키가 설정되지 않았습니다. 환경변수를 확인해주세요.");
   }
+
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
 KB금융그룹 고객 문의 자동 분류 시스템입니다.
@@ -47,11 +49,15 @@ KB금융그룹 고객 문의 자동 분류 시스템입니다.
 `;
 
   try {
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     let text = response.text();
-    text = text.replace(/```json|```/g, "").trim();
+    
+    // JSON 부분만 추출 (마크다운 코드 블록 등이 포함될 경우 대비)
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      text = jsonMatch[0];
+    }
 
     try {
       return JSON.parse(text) as InquiryResult;
